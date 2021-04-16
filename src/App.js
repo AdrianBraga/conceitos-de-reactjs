@@ -30,21 +30,48 @@ function App() {
     ));
   }
 
+  async function handleLikeRepository(id) {
+    // await api.post(`repositories/${id}/like`);
+
+    // setRepositories(repositories.filter(
+    //   repository => repository.id === likes
+    // ))
+
+    const response = await api.post(`repositories/${id}/like`)
+
+    setRepositories([
+      ...repositories.map(repository => {
+        if (repository.id === id) {
+          return response.data
+        };
+
+        return repository;
+      })
+    ])
+  }
+
   return (
     <div>
       <ul data-testid="repository-list">
         {repositories.map(repository => (
           <li key={repository.id}>
-            {repository.title}
+            <ul>
+              <li>{repository.title}</li>
+              <li  key={repository.id}>Likes: {repository.likes} </li>
+            </ul>
 
-            <button onClick={() => handleRemoveRepository(repository.id)}>
+            <button className="remove" onClick={() => handleRemoveRepository(repository.id)}>
               Remover
+            </button>
+
+            <button className="likes" onClick={() => handleLikeRepository(repository.id)}>
+              Like
             </button>
           </li>
         ))}
       </ul>
 
-      <button onClick={handleAddRepository}>Adicionar</button>
+      <button type="button" onClick={handleAddRepository}>Adicionar</button>
     </div>
   );
 }
